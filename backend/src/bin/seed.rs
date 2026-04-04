@@ -2,6 +2,7 @@ use sqlx::postgres::PgPoolOptions;
 use uuid::Uuid;
 use dotenvy::dotenv;
 use std::env;
+use bcrypt::{hash, DEFAULT_COST};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -25,6 +26,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     ];
 
     for (name, email, role, password) in users {
+        let hashed_password = hash(password, DEFAULT_COST)?;
         let res = sqlx::query!(
             r#"
             INSERT INTO users (id, name, email, role, password)
@@ -35,7 +37,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             name,
             email,
             role,
-            password
+            hashed_password
         )
         .execute(&pool)
         .await?;
