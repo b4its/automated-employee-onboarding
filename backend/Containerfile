@@ -1,31 +1,37 @@
 # Stage 1: Build
-FROM rust:1.94-slim AS builder
+FROM rust:1.94-slim AS builder 
 WORKDIR /app
 
-# Install dependencies untuk build (pkg-config dan libssl-dev sangat penting untuk sqlx)
+# Install dependencies sistem
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
-# Copy manifest dependencies
+# Copy manifest dan LOCK
 COPY Cargo.toml Cargo.lock ./
+
+# Copy hasil prepare dari host ke container agar bisa build offline
+COPY .sqlx ./.sqlx
+# Beritahu compiler untuk menggunakan mode offline
+ENV SQLX_OFFLINE=true
+# --------------------------
 
 # Copy source code dan migrations
 COPY src ./src
 COPY migrations ./migrations
 
-# Build release untuk binary aeonboarding-backend
+# Build release
 RUN cargo build --release
 
 # Stage 2: Runtime
 FROM debian:bookworm-slim
 WORKDIR /app
 
-# Install ca-certificates untuk mendukung koneksi TLS/SSL ke database atau external API
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy binary dari stage builder
-COPY --from=builder /app/target/release/aeonboarding-backend .
+# Sesuaikan nama binary dengan yang ada di Cargo.toml 
+COPY --from=builder /app/target/release/backend .
 
 EXPOSE 8080
-CMD ["./aeonboarding-backend"]
+# Jika nama binary Anda adalah 'backend' (sesuai Cargo.toml yang Anda tunjukkan sebelumnya)
+CMD ["./backend"]

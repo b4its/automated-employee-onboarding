@@ -1,2 +1,3 @@
 [Network]
-Label=app=aeonboarding
+Label=project=onboarding-nuxt
+NetworkName=aeonboarding

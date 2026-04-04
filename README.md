@@ -1,8 +1,17 @@
 ## Rust Clean Architecture with Nuxt Framework
+
 menggunakan podman untuk containerization, dan quadlet untuk mengelola container, pod, volume, dan jaringan pakai unit systemd
+
+### jalankan seeder 
+```bash
+cargo install sqlx-cli --no-default-features --features native-tls,postgres
+cargo sqlx prepare
+cargo run --bin seed
+```
 
 ### build images
 ```bash
+
 podman build -t aeonboarding-backend ./backend
 podman build -t localhost/aeonboarding-backend:latest -f backend/Containerfile ./backend
 podman build --no-cache --progress plain -t localhost/aeonboarding-backend:latest -f backend/Containerfile ./backend
@@ -17,12 +26,20 @@ mkdir -p ~/.config/systemd/user/
 cp quadlets/* ~/.config/systemd/user/
 
 # link container ke systemd
-mkdir -p ~/.config/containers/systemd/aeonboarding-nuxt
-ln -sf ~/programming/rust/cargoRs/nuxt-podman/quadlets/* ~/.config/containers/systemd/aeonboarding-nuxt/
-ln -sf ~/programming/rust/cargoRs/nuxt-podman/quadlets/*.container ~/.config/containers/systemd/aeonboarding-nuxt/
-ln -sf ~/programming/rust/cargoRs/nuxt-podman/quadlets/aeonboarding-net.network ~/.config/containers/systemd/aeonboarding-nuxt/aeonboarding.network
+# 1. Pastikan nama file di folder project sudah benar (Tanpa Typo)
+mv ~/programming/rust/cargoRs/aeonboaring/quadlets/aeonboarding-backend.contaniner ~/programming/rust/cargoRs/aeonboaring/quadlets/aeonboarding-backend.container 2>/dev/null || true
 
+# 2. Buat direktori target Quadlet
+mkdir -p ~/.config/containers/systemd/aeonboarding-nuxt
+
+# 3. Hubungkan file project ke sistem Quadlet (Gunakan path absolut)
+ln -sf ~/programming/rust/cargoRs/aeonboaring/quadlets/* ~/.config/containers/systemd/aeonboarding-nuxt/
+
+# 4. Beritahu systemd untuk men-generate unit dari file tersebut
 systemctl --user daemon-reload
+
+# 5. Cek hasilnya
+systemctl --user list-unit-files | grep aeonboarding
 ```
 ### jalankan network dan service yang lain
 ```bash
@@ -89,4 +106,16 @@ sqlx migrate run
 ### bersihkan package
 ```bash
 rm -rf .nuxt .output node_modules/.cache
+```
+
+### berhentikan semua service container
+```bash
+podman stop --all
+```
+
+### bersihkan service database
+```bash
+systemctl --user stop aeonboarding-db.service
+podman rm -f aeonboarding-db
+podman volume rm aeonboarding_db_data
 ```

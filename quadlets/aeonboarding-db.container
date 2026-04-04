@@ -1,8 +1,15 @@
+[Unit]
+Description=PostgreSQL Database for Automated Employee Onboarding Project
+
 [Container]
 Image=docker.io/library/postgres:15-alpine
-Environment=POSTGRES_USER=postgres POSTGRES_PASSWORD=secret POSTGRES_DB=aeonboarding
+Environment=POSTGRES_USER=admin POSTGRES_PASSWORD=secret POSTGRES_DB=aeonboarding
 Network=aeonboarding.network
 Volume=aeonboarding_db_data:/var/lib/postgresql/data
+PublishPort=5432:5432
+ContainerName=aeonboarding-db
 
-[Service]
-Restart=always
+
+[Install]
+WantedBy=multi-user.target default.target
+

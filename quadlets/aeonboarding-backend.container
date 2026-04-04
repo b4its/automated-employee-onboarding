@@ -1,0 +1,18 @@
+[Unit]
+Description=Rust Backend Service Automated Employee Onboarding
+After=aeonboarding-db.service
+
+[Container]
+ContainerName=onboarding-backend
+Image=localhost/aeonboarding-backend:latest
+Environment=DATABASE_URL=postgres://admin:secret@aeonboarding-db:5432/aeonboarding
+# Pastikan ini merujuk ke NAMA FILE .network kamu tanpa ekstensi
+Network=aeonboarding.network
+PublishPort=8080:8080
+
+[Install]
+# Tambahkan ini agar bisa di-enable saat boot
+WantedBy=default.target
+
+[Service]
+Restart=always
