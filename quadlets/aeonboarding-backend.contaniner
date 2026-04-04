@@ -1,0 +1,11 @@
+[Container]
+
+Image=localhost/aeonboarding-backend:latest
+Environment=DATABASE_URL=postgres://postgres:secret@aeonboarding-db:5432/aeonboarding
+Network=aeonboarding.network
+PublishPort=8080:8080
+# Menunggu database siap sebelum start
+DependsOn=aeonboarding-db.container
+
+[Service]
+Restart=always
