@@ -1,11 +1,31 @@
-FROM docker.io/library/rust:1.77-alpine AS builder
-RUN apk add --no-cache musl-dev
-WORKDIR /usr/src/app
-COPY . .
+# Stage 1: Build
+FROM rust:1.94-slim AS builder
+WORKDIR /app
+
+# Install dependencies untuk build (pkg-config dan libssl-dev sangat penting untuk sqlx)
+RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
+
+# Copy manifest dependencies
+COPY Cargo.toml Cargo.lock ./
+
+# Copy source code dan migrations
+COPY src ./src
+COPY migrations ./migrations
+
+# Build release untuk binary aeonboarding-backend
 RUN cargo build --release
 
-FROM docker.io/library/alpine:3.19
+# Stage 2: Runtime
+FROM debian:bookworm-slim
 WORKDIR /app
-COPY --from=builder /usr/src/app/target/release/aeonboarding-backend /app/
+
+# Install ca-certificates untuk mendukung koneksi TLS/SSL ke database atau external API
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy binary dari stage builder
+COPY --from=builder /app/target/release/aeonboarding-backend .
+
 EXPOSE 8080
 CMD ["./aeonboarding-backend"]
