@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border: #e2e8f0;
+    --brand: #13bf97;
+    --brand-dim: #ccfbee;
+  }
+  .dark {
+    --bg-primary: #080f1e;
+    --bg-secondary: #0f172a;
+    --bg-card: #162032;
+    --bg-sidebar: #0f172a;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --border: #1e293b;
+    --brand: #2dd9b0;
+    --brand-dim: #0d3d30;
+  }
+
+  body { 
+    @apply min-h-screen transition-colors duration-300;
+    background-color: var(--bg-primary); 
+    color: var(--text-primary); 
+  }
+}
+
+@layer components {
+  .card { 
+    background-color: var(--bg-card); 
+    border: 1px solid var(--border); 
+  }
+  .mesh-bg {
+    background: radial-gradient(ellipse at 0% 0%, #13bf9715 0%, transparent 50%),
+                radial-gradient(ellipse at 100% 100%, #3b82f610 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, #8b5cf605 0%, transparent 70%);
+  }
+  .status-pending { @apply bg-[#78350f20] text-[#fbbf24] border-[#fbbf2440] border; }
+  /* Tambahkan sisa utility class status lainnya di sini */
+}
