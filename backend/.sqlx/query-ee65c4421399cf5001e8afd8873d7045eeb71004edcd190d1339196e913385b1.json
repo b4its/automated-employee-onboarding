@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO onboarding_history (onboarding_id, new_status, notes) VALUES ($1, 'PENDING_REVIEW', 'Document uploaded')",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ee65c4421399cf5001e8afd8873d7045eeb71004edcd190d1339196e913385b1"
+}

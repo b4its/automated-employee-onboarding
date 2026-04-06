@@ -1,0 +1,102 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO onboardings (id, first_name, last_name, personal_email, department, start_date, status)\n            VALUES ($1, $2, $3, $4, $5, $6, $7)\n            RETURNING id, first_name, last_name, personal_email, department, start_date, status as \"status: _\", created_at, updated_at\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "first_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "last_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "personal_email",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "department",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "start_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 6,
+        "name": "status: _",
+        "type_info": {
+          "Custom": {
+            "name": "onboarding_status",
+            "kind": {
+              "Enum": [
+                "INITIATED",
+                "PENDING_REVIEW",
+                "RESUBMISSION_REQUIRED",
+                "IT_PROVISIONING",
+                "COMPLETED"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Date",
+        {
+          "Custom": {
+            "name": "onboarding_status",
+            "kind": {
+              "Enum": [
+                "INITIATED",
+                "PENDING_REVIEW",
+                "RESUBMISSION_REQUIRED",
+                "IT_PROVISIONING",
+                "COMPLETED"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "e71cdbf0161de8a59c1f4eee3216695768cbbd52173784e6cd72eb3cd6734643"
+}

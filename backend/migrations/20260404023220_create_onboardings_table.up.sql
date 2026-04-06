@@ -1,5 +1,5 @@
 -- Add up migration script here
--- Status enum berdasarkan System Flow BPMN [cite: 21, 31, 35, 39, 62]
+-- Status enum berdasarkan System Flow BPMN
 CREATE TYPE onboarding_status AS ENUM (
     'INITIATED',
     'PENDING_REVIEW',

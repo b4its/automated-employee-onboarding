@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE onboardings SET status = 'PENDING_REVIEW', updated_at = NOW() WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e951547d9432862ad7c995c176fadfa142262461ec2fc902577ff407aa4e7416"
+}

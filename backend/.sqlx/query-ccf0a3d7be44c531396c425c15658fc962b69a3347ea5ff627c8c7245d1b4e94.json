@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO onboarding_documents (onboarding_id, document_type, file_path) VALUES ($1, $2, $3)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Varchar",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ccf0a3d7be44c531396c425c15658fc962b69a3347ea5ff627c8c7245d1b4e94"
+}
