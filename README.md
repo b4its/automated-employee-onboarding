@@ -2,6 +2,13 @@
 
 menggunakan podman untuk containerization, dan quadlet untuk mengelola container, pod, volume, dan jaringan pakai unit systemd
 
+
+### minio open acceess at port 9001
+```bash
+http://0.0.0.0:9001/
+http://192.168.1.2:9001/browser/onboarding-documents
+```
+
 ### jalankan seeder 
 ```bash
 cargo install sqlx-cli --no-default-features --features native-tls,postgres
