@@ -1,11 +1,12 @@
 use crate::application::AppService;
 use axum::{
     extract::{Multipart, Path, State}, 
-    http::StatusCode,
+    http::{Method, StatusCode},
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
+use tower_http::cors::{Any, CorsLayer};
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
@@ -17,6 +18,11 @@ pub struct AppState {
 }
 
 pub fn create_router(state: AppState) -> Router {
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE, Method::OPTIONS])
+        .allow_headers(Any);
+
     Router::new()
         // Auth Routes
         .route("/api/auth/register", post(register_handler))
@@ -27,6 +33,7 @@ pub fn create_router(state: AppState) -> Router {
         .route("/api/v1/onboarding/:id", get(get_by_id_handler))
         // Document Upload Route 
         .route("/api/v1/onboarding/:id/documents", post(upload_document_handler))
+        .layer(cors)
         .with_state(state)
 }
 

@@ -11,4 +11,10 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '' // Agar sesuai dengan class="dark" di Tailwind
   },
+  runtimeConfig: {
+    public: {
+      // Masukkan IP backend Rust Anda di sini
+      apiBase: 'http://192.168.101.8:8080'
+    }
+  },
 })

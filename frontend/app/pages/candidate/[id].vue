@@ -8,7 +8,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
-          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Selamat Datang di Oryphem!</h2>
+          <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Selamat Datang {{ candidateName }}</h2>
           <p class="mt-2 text-gray-500 dark:text-gray-400">Silakan unggah dokumen identitas Anda untuk melanjutkan proses onboarding ke tahap review.</p>
         </div>
 
@@ -50,8 +50,9 @@
           </div>
 
           <div class="pt-4">
-            <button type="submit" :disabled="!selectedFile" class="flex w-full justify-center rounded-xl bg-blue-600 px-3 py-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-              Unggah Dokumen Aman
+            <button type="submit" :disabled="!selectedFile || isUploading" class="flex w-full justify-center items-center rounded-xl bg-blue-600 px-3 py-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              <span v-if="isUploading">Mengunggah...</span>
+              <span v-else>Unggah Dokumen Aman</span>
             </button>
           </div>
         </form>
@@ -66,43 +67,81 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'nuxt/app'
 
+const config = useRuntimeConfig()
 const route = useRoute()
-const onboardingId = route.params.id || 'ob_123' // Fallback for demo
+const onboardingId = route.params.id
 
+// Reaktif variable untuk menyimpan nama
+const candidateName = ref("Loading...") 
 const documentType = ref('IDENTIFICATION')
 const selectedFile = ref(null)
 const isDragging = ref(false)
+const isUploading = ref(false)
+
+// Fungsi untuk mengambil data detail kandidat saat halaman dimuat
+const fetchCandidateData = async () => {
+  try {
+    const data = await $fetch(`/api/v1/onboarding/${onboardingId}`, {
+      baseURL: config.public.apiBase,
+      method: 'GET'
+    })
+    // Berdasarkan backend Rust: data.candidateName
+    candidateName.value = data.candidateName
+  } catch (error) {
+    console.error('Error fetching candidate:', error)
+    candidateName.value = "Kandidat" // Fallback jika ID tidak ditemukan
+  }
+}
+
+onMounted(() => {
+  fetchCandidateData()
+})
 
 const handleFileSelect = (event) => {
   const file = event.target.files[0]
-  if (file && file.size <= 10 * 1024 * 1024) { // Validasi 10MB
-    selectedFile.value = file
-  } else {
-    alert("Ukuran file maksimal adalah 10MB.")
-  }
+  validateAndSetFile(file)
 }
 
 const handleDrop = (event) => {
   isDragging.value = false
   const file = event.dataTransfer.files[0]
+  validateAndSetFile(file)
+}
+
+const validateAndSetFile = (file) => {
   if (file && file.size <= 10 * 1024 * 1024) {
     selectedFile.value = file
+  } else if (file) {
+    alert("Ukuran file maksimal adalah 10MB.")
   }
 }
 
 const uploadDocument = async () => {
-  if (!selectedFile.value) return
+  if (!selectedFile.value || !onboardingId) return
   
-  // Simulasi struktur FormData untuk POST /documents
+  isUploading.value = true
   const formData = new FormData()
   formData.append('file', selectedFile.value)
   formData.append('documentType', documentType.value)
   
-  console.log(`Mengunggah ke /api/v1/onboarding/${onboardingId}/documents`, formData)
-  alert('Simulasi: Dokumen berhasil diunggah dengan status PENDING_REVIEW')
-  selectedFile.value = null
+  try {
+    const response = await $fetch(`/api/v1/onboarding/${onboardingId}/documents`, {
+      baseURL: config.public.apiBase,
+      method: 'POST',
+      body: formData
+    })
+    
+    alert(`Sukses: ${response.message}`)
+    selectedFile.value = null
+  } catch (error) {
+    console.error('Upload error:', error)
+    const errorMsg = error.data?.error || error.message || 'Terjadi kesalahan saat mengunggah'
+    alert(`Gagal: ${errorMsg}`)
+  } finally {
+    isUploading.value = false
+  }
 }
 </script>
