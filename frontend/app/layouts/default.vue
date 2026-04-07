@@ -3,8 +3,8 @@
     
     <div class="md:hidden fixed top-0 w-full z-40 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 flex items-center justify-between p-4">
       <div class="flex items-center gap-3">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold shadow-md text-xs">HR</div>
-        <h1 class="text-lg font-bold tracking-tight">Oryphem</h1>
+        <!-- <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white font-bold shadow-md text-xs">HR</div> -->
+        <h1 class="text-lg font-bold tracking-tight">Admin</h1>
       </div>
       <button @click="isSidebarOpen = true" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -27,8 +27,8 @@
     >
       <div class="flex h-16 shrink-0 items-center justify-between px-6 border-b border-gray-200 dark:border-gray-800">
         <div class="flex items-center gap-3">
-          <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">HR</div>
-          <h1 class="text-xl font-bold tracking-tight truncate">Oryphem HRIS</h1>
+          <!-- <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white font-bold shadow-lg">HR</div> -->
+          <h1 class="text-xl font-bold tracking-tight truncate">Admin HRIS</h1>
         </div>
         <button @click="isSidebarOpen = false" class="md:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-white focus:outline-none">
           <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

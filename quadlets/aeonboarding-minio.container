@@ -1,0 +1,24 @@
+[Unit]
+Description=MinIO Object Storage Container
+After=network-online.target
+
+[Container]
+Image=quay.io/minio/minio
+ContainerName=aeonboarding-minio
+# Menjalankan perintah server MinIO
+Exec=server /data --console-address ":9001"
+
+# Kredensial Akses Dashboard (Access Key & Secret Key)
+Environment=MINIO_ROOT_USER=admin
+Environment=MINIO_ROOT_PASSWORD=admin123
+
+# Ekspos ke Host agar bisa diakses dari Browser/Host
+PublishPort=9000:9000
+PublishPort=9001:9001
+
+# Mapping ke folder minio di dalam project Anda
+Volume=%h/programming/rust/cargoRs/aeonboaring/minio:/data:Z
+
+# Menghubungkan ke network internal Podman
+Network=aeonboarding.network
+
